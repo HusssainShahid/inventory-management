@@ -74,17 +74,13 @@
     els.empty.classList.add('d-none');
     els.list.classList.remove('d-none');
     els.list.innerHTML = items.map(function (row) {
-      const updated = formatUpdatedAt(row.updated_at);
       return (
         '<li class="inv-item" data-id="' + escapeHtml(row.id) + '">' +
-          '<div class="inv-item-main">' +
-            '<span class="inv-item-name">' + escapeHtml(row.item) + '</span>' +
-            '<span class="inv-item-meta">' +
-              'Qty ' + escapeHtml(String(row.quantity)) +
-              (row.location ? ' · ' + escapeHtml(row.location) : '') +
-              ' · ' + updated +
-            '</span>' +
-          '</div>' +
+          '<span class="inv-item-name-qty">' + escapeHtml(row.item) + ' <span class="inv-item-paren">(' + escapeHtml(String(row.quantity)) + ')</span></span>' +
+          '<span class="inv-item-loc-wrap">' +
+            '<span class="inv-item-label">Location</span> ' +
+            '<span class="inv-item-loc">' + (row.location ? escapeHtml(row.location) : '—') + '</span>' +
+          '</span>' +
           '<div class="inv-item-actions">' +
             '<button type="button" class="btn btn-sm btn-edit" aria-label="Edit">Edit</button>' +
             '<button type="button" class="btn btn-sm btn-delete" aria-label="Delete">Delete</button>' +
