@@ -14,25 +14,7 @@ Simple, mobile-first inventory app: add, edit, delete, search, and filter items.
 ## Supabase setup
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run:
-
-```sql
-create table if not exists public.items (
-  id uuid primary key default gen_random_uuid(),
-  item text not null,
-  quantity integer not null default 1,
-  location text,
-  updated_at timestamptz not null default now()
-);
-
--- Optional: allow anonymous read/write for demo (tighten with RLS for production)
-alter table public.items enable row level security;
-
-create policy "Allow all for items"
-  on public.items for all
-  using (true)
-  with check (true);
-```
+2. In **SQL Editor**, run the full schema from **`supabase-schema.sql`** in this repo. It creates the `items` table, the `issued` table (for issue records and returns), and RLS policies.
 
 3. In **Settings → API** copy:
    - **Project URL**

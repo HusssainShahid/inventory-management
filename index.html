@@ -14,30 +14,84 @@
   <div class="container py-4">
     <header class="mb-4">
       <h1 class="h3 fw-semibold mb-1">Inventory</h1>
-      <p class="text-muted small mb-0">Add, search, and manage your items</p>
+      <p class="text-muted small mb-0">Add, search, and manage items · Issue and track returns</p>
     </header>
 
-    <div class="row g-3 mb-4">
-      <div class="col-12 col-md-10">
-        <label for="searchInput" class="form-label visually-hidden">Search</label>
-        <div class="input-group">
-          <span class="input-group-text" id="searchIcon"><span class="search-icon" aria-hidden="true"></span></span>
-          <input type="search" class="form-control" id="searchInput" placeholder="Search by item or location..." autocomplete="off">
+    <ul class="nav nav-tabs inv-tabs mb-4" role="tablist" id="invTabNav">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-items-btn" data-bs-toggle="tab" data-bs-target="#tab-items" type="button" role="tab">Items</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-issued-btn" data-bs-toggle="tab" data-bs-target="#tab-issued" type="button" role="tab">Issued</button>
+      </li>
+    </ul>
+
+    <div class="tab-content inv-tab-content" id="invTabContent">
+      <!-- Items column/panel -->
+      <div class="tab-pane fade show active" id="tab-items" role="tabpanel">
+        <h2 class="inv-section-title inv-section-items">Items</h2>
+        <div class="mb-4">
+          <label for="searchInput" class="form-label visually-hidden">Search</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="searchIcon"><span class="search-icon" aria-hidden="true"></span></span>
+            <input type="search" class="form-control" id="searchInput" placeholder="Search by item or location..." autocomplete="off">
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" id="btnAdd" data-bs-toggle="modal" data-bs-target="#itemModal">
+              Add item
+            </button>
+          </div>
         </div>
+        <div id="loading" class="text-center py-5 text-muted d-none">Loading…</div>
+        <div class="inv-list-header d-none" id="itemListHeader" aria-hidden="true">
+          <span class="inv-item-name-qty">Item</span>
+          <span class="inv-item-total">Total</span>
+          <span class="inv-item-issued">Issued</span>
+          <span class="inv-item-loc-wrap"><span class="inv-item-label">Location</span></span>
+          <span class="inv-item-actions"></span>
+        </div>
+        <ul id="itemList" class="inv-list" aria-label="Inventory items"></ul>
+        <p id="emptyState" class="text-muted text-center py-5 d-none">No items yet. Add one above.</p>
       </div>
-      <div class="col-12 col-md-2 d-flex align-items-end">
-        <button type="button" class="btn btn-primary w-100" id="btnAdd" data-bs-toggle="modal" data-bs-target="#itemModal">
-          Add item
-        </button>
+
+      <!-- Issued column/panel -->
+      <div class="tab-pane fade" id="tab-issued" role="tabpanel">
+        <h2 class="inv-section-title inv-section-issued">Issued</h2>
+        <div class="mb-4">
+          <label for="issueSearchInput" class="form-label visually-hidden">Search issued records</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="issueSearchIcon"><span class="search-icon" aria-hidden="true"></span></span>
+            <input type="search" class="form-control" id="issueSearchInput" placeholder="Search by item or issued to..." autocomplete="off">
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" id="btnAddIssue" data-bs-toggle="modal" data-bs-target="#issueModal">
+              Add issue record
+            </button>
+          </div>
+        </div>
+        <div id="issueLoading" class="text-center py-5 text-muted d-none">Loading…</div>
+        <div class="table-responsive">
+          <table class="table inv-issued-table" id="issuedTable">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Issued to</th>
+                <th>Date of issue</th>
+                <th>Qty issued</th>
+                <th>Return qty</th>
+                <th>Return date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="issuedBody"></tbody>
+          </table>
+        </div>
+        <p id="issuedEmpty" class="text-muted text-center py-5 d-none">No issue records yet. Add one above.</p>
       </div>
     </div>
-
-    <div id="message" class="alert d-none" role="alert"></div>
-    <div id="loading" class="text-center py-5 text-muted d-none">Loading…</div>
-    <ul id="itemList" class="inv-list" aria-label="Inventory items"></ul>
-    <p id="emptyState" class="text-muted text-center py-5 d-none">No items yet. Add one above.</p>
   </div>
 
+  <!-- Item modal (add/edit item) -->
   <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -50,15 +104,15 @@
             <input type="hidden" id="itemId">
             <div class="mb-3">
               <label for="itemName" class="form-label">Item</label>
-              <input type="text" class="form-control" id="itemName" required placeholder="e.g. Laptop">
+              <input type="text" class="form-control" id="itemName" required>
             </div>
             <div class="mb-3">
               <label for="itemQuantity" class="form-label">Quantity</label>
-              <input type="number" class="form-control" id="itemQuantity" min="0" value="1" required>
+              <input type="number" class="form-control" id="itemQuantity" min="0" required>
             </div>
             <div class="mb-3">
               <label for="itemLocation" class="form-label">Location</label>
-              <input type="text" class="form-control" id="itemLocation" placeholder="e.g. Office A">
+              <input type="text" class="form-control" id="itemLocation">
             </div>
           </div>
           <div class="modal-footer">
@@ -68,6 +122,58 @@
         </form>
       </div>
     </div>
+  </div>
+
+  <!-- Issue modal (add/edit issue record) -->
+  <div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="issueModalLabel">Add issue record</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="issueForm">
+          <div class="modal-body">
+            <input type="hidden" id="issueId">
+            <div class="mb-3">
+              <label for="issueItemId" class="form-label">Item</label>
+              <select class="form-select" id="issueItemId" required>
+                <option value="">Select item</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="issueIssuedTo" class="form-label">Issued to</label>
+              <input type="text" class="form-control" id="issueIssuedTo" required>
+            </div>
+            <div class="mb-3">
+              <label for="issueIssuedAt" class="form-label">Date of issue</label>
+              <input type="date" class="form-control" id="issueIssuedAt" required>
+            </div>
+            <div class="mb-3">
+              <label for="issueQuantity" class="form-label">Quantity issued</label>
+              <input type="number" class="form-control" id="issueQuantity" min="1" value="1" required>
+            </div>
+            <div class="mb-3">
+              <label for="issueReturnQty" class="form-label">Return quantity</label>
+              <input type="number" class="form-control" id="issueReturnQty" min="0" value="0">
+            </div>
+            <div class="mb-3">
+              <label for="issueReturnDate" class="form-label">Return date</label>
+              <input type="date" class="form-control" id="issueReturnDate">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="issueBtnSubmit">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="inv-toast" role="alert" aria-live="polite">
+    <span class="inv-toast-text"></span>
+    <button type="button" class="inv-toast-close" aria-label="Close">&times;</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
