@@ -205,7 +205,7 @@
     showLoading(true);
     Promise.all([
       supabase.from(TABLE_ITEMS).select('id,item,quantity,location,updated_at').order('updated_at', { ascending: false }),
-      supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date').order('issued_at', { ascending: false })
+      supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date,created_at').order('created_at', { ascending: false })
     ]).then(function (results) {
       var itemsRes = results[0];
       var issuedRes = results[1];
@@ -247,7 +247,7 @@
       return;
     }
     showIssueLoading(true);
-    supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date').order('issued_at', { ascending: false })
+    supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date,created_at').order('created_at', { ascending: false })
       .then(function (res) {
         showIssueLoading(false);
         if (res.error) {
@@ -389,7 +389,7 @@
 
   function loadIssuedForSums() {
     if (!supabase) return;
-    supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date').order('issued_at', { ascending: false })
+    supabase.from(TABLE_ISSUED).select('id,item_id,issued_to,issued_at,quantity_issued,return_quantity,return_date,created_at').order('created_at', { ascending: false })
       .then(function (res) {
         allIssued = res.data || [];
         filteredIssued = allIssued;
